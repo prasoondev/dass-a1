@@ -2,9 +2,11 @@ function Login() {
     return (
       <div>
         <h1>Login</h1>
-        <p>
-          Edit <code>src/pages/login.jsx</code> and save to test HMR
-        </p>
+        <form action="POST">
+          <input type="text" name="username" placeholder="Username" />
+          <input type="password" name="password" placeholder="Password" />
+          <input type="submit" />
+        </form>
       </div>
     )
   }
