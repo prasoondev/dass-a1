@@ -50,6 +50,7 @@ function Login() {
         <input type="password" name="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
         <input type="submit" value="Login" onClick={(e) => handleSubmit(e)} />
       </form>
+      <button onClick={() => window.location.href = "/register"}>Register</button>
     </div>
   )
 }

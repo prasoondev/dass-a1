@@ -45,8 +45,9 @@ function Register() {
         <input type="number" name="age" placeholder="Age" value={age} onChange={(e) => setAge(e.target.value)} />
         <input type="number" name="contact" placeholder="Contact" value={contact} onChange={(e) => setContact(e.target.value)} />
         <input type="password" name="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
-        <input type="submit" value="Login" onClick={(e) => handleSubmit(e)} />
+        <input type="submit" value="Register" onClick={(e) => handleSubmit(e)} />
       </form>
+      <button onClick={() => window.location.href = "/"}>Login</button>
     </div>
   )
 }

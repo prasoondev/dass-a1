@@ -13,6 +13,8 @@ app.use(cors());
 app.use(express.json());
 const PORT = 3000;
 
+const allowedDomain = /iiit\.ac\.in$/;
+
 
 function verifyToken(token) {
   try {
@@ -25,7 +27,6 @@ function verifyToken(token) {
 
 // register endpoint
 app.post("/register", (request, response) => {
-  const allowedDomain = /iiit\.ac\.in$/;
   if (!allowedDomain.test(request.body.email)) {
     return response.status(400).send({
       message: "Invalid email domain. Only @iiit.ac.in is allowed.",
@@ -163,6 +164,37 @@ app.get("/profile", async (request, response) => {
   }
 });
 
+app.put("/profile", async (request, response) => {
+  const userId = request.get('userId');
+  const token = request.get('token');
+
+  if (!userId || !token) {
+    return response.status(400).json({ error: "Missing userId or token" });
+  }
+
+  const decodedToken = verifyToken(token);
+  if (!decodedToken) {
+    return response.status(401).json({ error: "Invalid or expired token" });
+  }
+  if (decodedToken.userId !== userId) {
+    return response.status(403).json({ error: "User not authorized" });
+  }
+  if (!allowedDomain.test(request.body.email)) {
+    return response.status(400).send({
+      message: "Invalid email domain. Only @iiit.ac.in is allowed.",
+    });
+  }
+  try {
+    const user = await User.findOneAndUpdate({ userId: userId }, request.body, { new: true });
+    if (!user) {
+      return response.status(404).json({ error: "User not found" });
+    }
+    response.json(user);
+  } catch (err) {
+    console.error(err);
+    response.status(500).json({ error: "Server error" });
+  }
+});
 
 
 app.listen(PORT, () => {
