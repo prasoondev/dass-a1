@@ -4,6 +4,7 @@ const bcrypt = require("bcrypt");
 const User = require("./userschema");
 const dbConnect = require("./dbconnect");
 const jwt = require("jsonwebtoken");
+require('dotenv').config()
 
 dbConnect();
 const app = express();
@@ -11,6 +12,16 @@ const cors = require("cors");
 app.use(cors());
 app.use(express.json());
 const PORT = 3000;
+
+
+function verifyToken(token) {
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_AUTH);
+    return decoded; // Return the decoded token if it's valid
+  } catch (err) {
+    return null; // Return null if the token is invalid or expired
+  }
+}
 
 // register endpoint
 app.post("/register", (request, response) => {
@@ -91,7 +102,7 @@ app.post("/login", (request, response) => {
               userId: user.userId,
               userEmail: user.email,
             },
-            "RANDOM-TOKEN",
+            process.env.JWT_AUTH,
             { expiresIn: "24h" }
           );
 
@@ -119,6 +130,40 @@ app.post("/login", (request, response) => {
       });
     });
 });
+
+app.get("/profile", async (request, response) => {
+  const userId = request.get('userId');
+  const token = request.get('token');
+
+  // console.log("Received userId:", userId);
+  // console.log("Received token:", token);
+
+  if (!userId || !token) {
+    return response.status(400).json({ error: "Missing userId or token" });
+  }
+
+  const decodedToken = verifyToken(token);
+  if (!decodedToken) {
+    return response.status(401).json({ error: "Invalid or expired token" });
+  }
+  if (decodedToken.userId !== userId) {
+    return response.status(403).json({ error: "User not authorized" });
+  }
+
+  try {
+    const user = await User.findOne({ userId: userId }); // Assuming you're using Mongoose and have a User model
+    if (!user) {
+      return response.status(404).json({ error: "User not found" });
+    }
+    // console.log(user);
+    response.json(user);
+  } catch (err) {
+    console.error(err);
+    response.status(500).json({ error: "Server error" });
+  }
+});
+
+
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
