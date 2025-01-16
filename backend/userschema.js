@@ -1,6 +1,13 @@
 const mongoose = require("mongoose");
 const UserSchema = new mongoose.Schema({
-
+    
+    userId: {
+        type: String,
+        required: true,
+        unique: true,
+        default: () => new mongoose.Types.ObjectId().toString(), // Generates a unique ID if not provided
+      },
+    
     fname: {
         type: String,
         required: [true, "Please provide a First Name!"],

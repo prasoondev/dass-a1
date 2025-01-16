@@ -88,7 +88,7 @@ app.post("/login", (request, response) => {
           //   create JWT token
           const token = jwt.sign(
             {
-              userId: user._id,
+              userId: user.userId,
               userEmail: user.email,
             },
             "RANDOM-TOKEN",
@@ -100,6 +100,7 @@ app.post("/login", (request, response) => {
             message: "Login Successful",
             email: user.email,
             token,
+            userId: user.userId,
           });
         })
         // catch error if password does not match

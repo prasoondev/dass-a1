@@ -1,6 +1,6 @@
 import './App.css'
 import React from 'react'
-import { useCookies } from 'react-cookie';
+import Cookies from "universal-cookie";
 import { Navigate } from 'react-router-dom';
 import {BrowserRouter as Router, Routes, Route} from 'react-router-dom'
 import Search from './pages/search'
@@ -16,47 +16,47 @@ import Layout from './Layout'
 import ProtectedRoute from './components/protectedroute';
 
 function App() {
-  const [cookies] = useCookies(['token']);
+  const cookies = new Cookies();
   return (
     <Router>
       <Routes>
         {/*Public routes*/}
-          <Route path="/" element={cookies.token ? <Navigate to="/profile" /> : <Login />} />
-          <Route path="/register" element={cookies.token ? <Navigate to="/profile" /> : <Register />} />
+          <Route path="/" element={cookies.get("token") ? <Navigate to="/profile" /> : <Login />} />
+          <Route path="/register" element={cookies.get("token") ? <Navigate to="/profile" /> : <Register />} />
         {/*Private routes*/}
         <Route element={<Layout />}>
           <Route path="/search" element={
-            <ProtectedRoute token={cookies.token}>
+            <ProtectedRoute token={cookies.get("token")}>
               <Search />
             </ProtectedRoute>
             } />
           <Route path="/profile" element={
-            <ProtectedRoute token={cookies.token}>
+            <ProtectedRoute token={cookies.get("token")}>
               <Profile />
             </ProtectedRoute>
           } />
           <Route path="/support" element={
-            <ProtectedRoute token={cookies.token}>
+            <ProtectedRoute token={cookies.get("token")}>
               <Support />
             </ProtectedRoute>
           } />
           <Route path="/cart" element={
-            <ProtectedRoute token={cookies.token}>
+            <ProtectedRoute token={cookies.get("token")}>
               <Cart />
             </ProtectedRoute>
           } />
           <Route path="/deliver" element={
-            <ProtectedRoute token={cookies.token}>
+            <ProtectedRoute token={cookies.get("token")}>
               <Deliver />
             </ProtectedRoute>
           } />
           <Route path="/orders" element={
-            <ProtectedRoute token={cookies.token}>
+            <ProtectedRoute token={cookies.get("token")}>
               <Orders />
             </ProtectedRoute>
           } />
           <Route path="/items" element={
-            <ProtectedRoute token={cookies.token}>
+            <ProtectedRoute token={cookies.get("token")}>
               <Items />
             </ProtectedRoute>
           } />

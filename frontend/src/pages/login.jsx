@@ -4,7 +4,6 @@ import Cookies from "universal-cookie";
 
 function Login() {
   const LOGIN_URL = 'http://localhost:3000/login';
-  // const REGISTER_URL = "http://localhost:3000/register";
   const cookies = new Cookies();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -25,9 +24,16 @@ function Login() {
         setLogin(true);
         cookies.set("token", result.data.token, {
           path: "/",
-          SameSite: "none",
+          sameSite: "none",
+          secure: true,
+        });
+        cookies.set("userId", result.data.userId, {
+            path: "/" ,
+            sameSite: "none",
+            secure: true,
         });
         console.log(cookies.get("token"));
+        console.log(cookies.get("userId"));
         window.location.href = "/profile";
       })
       .catch((error) => {
