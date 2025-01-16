@@ -1,4 +1,5 @@
 import {Link} from 'react-router-dom'
+import Logout from '../pages/logout'
 function Navbar(){
     return (
         <>
@@ -19,6 +20,9 @@ function Navbar(){
         </Link>
         <Link to="/orders">
             <button>Orders</button>
+        </Link>
+        <Link>
+            <Logout />
         </Link>
         </>
     )

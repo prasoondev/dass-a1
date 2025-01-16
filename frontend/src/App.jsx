@@ -1,6 +1,7 @@
 import './App.css'
 import React from 'react'
 import { useCookies } from 'react-cookie';
+import { Navigate } from 'react-router-dom';
 import {BrowserRouter as Router, Routes, Route} from 'react-router-dom'
 import Search from './pages/search'
 import Profile from './pages/profile'

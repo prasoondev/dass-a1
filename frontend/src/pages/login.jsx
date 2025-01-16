@@ -1,8 +1,11 @@
 import { useState } from "react"
 import axios from "axios";
+import Cookies from "universal-cookie";
+
 function Login() {
   const LOGIN_URL = 'http://localhost:3000/login';
   // const REGISTER_URL = "http://localhost:3000/register";
+  const cookies = new Cookies();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [login, setLogin] = useState(false);
@@ -20,6 +23,12 @@ function Login() {
       .then((result) => {
         console.log(result);
         setLogin(true);
+        cookies.set("token", result.data.token, {
+          path: "/",
+          SameSite: "none",
+        });
+        console.log(cookies.get("token"));
+        window.location.href = "/profile";
       })
       .catch((error) => {
         error = new Error();
