@@ -4,6 +4,7 @@ const bcrypt = require("bcrypt");
 const User = require("./userschema");
 const dbConnect = require("./dbconnect");
 const jwt = require("jsonwebtoken");
+const Item = require("./itemschema");
 require('dotenv').config()
 
 dbConnect();
@@ -196,6 +197,32 @@ app.put("/profile", async (request, response) => {
   }
 });
 
+
+
+app.post("/sell", (request, response) => {
+  const item = new Item({
+    name: request.body.name,
+    price: Number(request.body.price),
+    description: request.body.description,
+    sellerid: request.body.sellerid,
+    category: request.body.category,
+  });
+  item
+    .save()
+    .then((result) => {
+      response.status(201).send({
+        message: "Item Created Successfully",
+        result,
+      });
+    })
+    // catch error if the new user wasn't added successfully to the database
+    .catch((error) => {
+      response.status(500).send({
+        message: "Error creating item",
+        error,
+      });
+    });
+});
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);

@@ -21,6 +21,12 @@ function Navbar(){
         <Link to="/orders">
             <button>Orders</button>
         </Link>
+        <Link to="/sell">
+            <button>Sell</button>
+        </Link>
+        <Link to="/buy">
+            <button>Buy</button>
+        </Link>
         <Link>
             <Logout />
         </Link>

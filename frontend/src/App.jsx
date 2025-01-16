@@ -12,6 +12,8 @@ import Orders from './pages/orders'
 import Items from './pages/items'
 import Login from './pages/login'
 import Register from './pages/register'
+import Sell from './pages/sell'
+import Buy from './pages/buy'
 import Layout from './Layout'
 import ProtectedRoute from './components/protectedroute';
 
@@ -43,6 +45,16 @@ function App() {
           <Route path="/cart" element={
             <ProtectedRoute token={cookies.get("token")}>
               <Cart />
+            </ProtectedRoute>
+          } />
+          <Route path="/sell" element={
+            <ProtectedRoute token={cookies.get("token")}>
+              <Sell />
+            </ProtectedRoute>
+          } />
+          <Route path="/buy" element={
+            <ProtectedRoute token={cookies.get("token")}>
+              <Buy />
             </ProtectedRoute>
           } />
           <Route path="/deliver" element={
