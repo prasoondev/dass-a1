@@ -224,6 +224,23 @@ app.post("/sell", (request, response) => {
     });
 });
 
+app.get("/buy", (request, response) => {
+  const excludedId = request.get('id');
+  console.log("Excluded ID:", excludedId);
+  Item.find()
+    .then((items) => {
+      const filteredItems = items.filter((item) => item.sellerid !== excludedId);
+      response.status(200).send(filteredItems);
+    })
+    .catch((error) => {
+      response.status(500).send({
+        message: "Error fetching items",
+        error,
+      });
+    });
+});
+
+
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });

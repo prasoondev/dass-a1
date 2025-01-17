@@ -1,12 +1,73 @@
+import { useState, useEffect } from "react";
+import axios from 'axios';
+import Cookies from 'universal-cookie';
+
 function Buy() {
-    return (
-      <div>
-        <h1>Buy</h1>
-        <p>
-          Edit <code>src/pages/buy.jsx</code> and save to test HMR
-        </p>
+  const BUY_URL = 'http://localhost:3000/buy';
+  const cookies = new Cookies();
+  const uid = cookies.get('userId');
+  const token = cookies.get('token');
+  const [itemDetails, setItemDetails] = useState([]);
+
+  useEffect(() => {
+    const configuration = {
+      method: "get",
+      url: BUY_URL,
+      headers: {
+        'Content-Type': 'application/json',
+        'id': uid,  // Send userId in the header
+        'token': token,  // Send token in the header
+      },
+    };
+
+    axios(configuration)
+      .then((response) => {
+        setItemDetails(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching items:", error);
+      });
+  }, [uid, token]);
+
+  return (
+    <div>
+      <h1>Buy</h1>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "20px" }}>
+        {itemDetails.length > 0 ? (
+          itemDetails.map((item) => (
+            <div 
+              key={item._id} 
+              style={{
+                border: "1px solid #ccc",
+                borderRadius: "8px",
+                padding: "16px",
+                width: "250px",
+                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+              }}
+            >
+              <h3>{item.name}</h3>
+              <p><strong>Price:</strong> ${item.price}</p>
+              <p><strong>Description:</strong> {item.description}</p>
+              <button 
+                style={{
+                  backgroundColor: "#007BFF",
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: "4px",
+                  padding: "8px 12px",
+                  cursor: "pointer",
+                }}
+              >
+                View Details
+              </button>
+            </div>
+          ))
+        ) : (
+          <p>Loading items...</p>
+        )}
       </div>
-    )
-  }
-  
-  export default Buy
+    </div>
+  );
+}
+
+export default Buy;
