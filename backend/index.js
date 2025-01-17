@@ -235,7 +235,7 @@ app.get("/buy", (request, response) => {
 app.get("/items", async (request, response) => {
   try {
     const itemId = request.get("item");
-    console.log(itemId);
+    // console.log(itemId);
     const item = await Item.findOne({ itemId: itemId });
     if (!item) {
       return response.status(404).send({ message: "Item not found" });
@@ -301,6 +301,51 @@ app.post("/items", async (request, response) => {
       return response.status(400).json({ error: "Item already added" });
     }
     user.items.push(itemId);
+    await user.save();
+    response.json(user);
+  } catch (err) {
+    console.error(err);
+    response.status(500).json({ error: "Server error" });
+  }
+});
+
+app.get("/cart", async (request, response) => {
+  const userId = request.get('id');
+  if (!userId) {
+    return response.status(400).json({ error: "Missing userId" });
+  }
+  try {
+    const user = await User.findOne({ userId: userId });
+    if (!user) {
+      return response.status(404).json({ error: "User not found" });
+    }
+    const items = await Item.find({ itemId: { $in: user.items } });
+    response.status(200).send(items);
+  } catch (err) {
+    console.error(err);
+    response.status(500).json({ error: "Server error" });
+  }
+});
+
+app.patch("/cart", async (request, response) => {
+  const userId = request.get('id');
+  if (!userId) {
+    return response.status(400).json({ error: "Missing userId" });
+  }
+  try {
+    const user = await User.findOne({ userId: userId });
+    if (!user) {
+      return response.status(404).json({ error: "User not found" });
+    }
+    const itemId = request.get('item');
+    if (!itemId) {
+      return response.status(400).json({ error: "Missing item" });
+    }
+    const index = user.items.indexOf(itemId);
+    if (index === -1) {
+      return response.status(404).json({ error: "Item not found" });
+    }
+    user.items.splice(index, 1);
     await user.save();
     response.json(user);
   } catch (err) {
