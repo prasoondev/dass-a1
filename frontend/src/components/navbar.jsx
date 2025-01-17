@@ -25,7 +25,7 @@ function Navbar(){
             <button>Sell</button>
         </Link>
         <Link to="/buy">
-            <button>Buy</button>
+            <button>My Items</button>
         </Link>
         <Link>
             <Logout />

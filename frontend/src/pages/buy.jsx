@@ -31,8 +31,8 @@ function Buy() {
       });
   }, [uid, token]);
 
-  const handleViewDetails = (itemId) => {
-    navigate(`/items/${itemId}`);
+  const handleDelete = (itemId) => {
+    navigate(`/buy`);
   };
 
   return (
@@ -63,9 +63,9 @@ function Buy() {
                   padding: "8px 12px",
                   cursor: "pointer",
                 }}
-                onClick={() => handleViewDetails(item.itemId)}
+                onClick={() => handleDelete(item.itemId)}
               >
-                View Details
+                Delete item
               </button>
             </div>
           ))

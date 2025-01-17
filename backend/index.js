@@ -221,7 +221,7 @@ app.get("/buy", (request, response) => {
   const excludedId = request.get('id');
   Item.find()
     .then((items) => {
-      const filteredItems = items.filter((item) => item.sellerid !== excludedId);
+      const filteredItems = items.filter((item) => item.sellerid == excludedId);
       response.status(200).send(filteredItems);
     })
     .catch((error) => {
@@ -233,15 +233,15 @@ app.get("/buy", (request, response) => {
 });
 
 app.get("/items", async (request, response) => {
-  try{
+  try {
     const itemId = request.get("item");
     console.log(itemId);
     const item = await Item.findOne({ itemId: itemId });
-    if(!item){
+    if (!item) {
       return response.status(404).send({ message: "Item not found" });
     }
     const seller = await User.findOne({ userId: item.sellerid });
-    if(!seller){
+    if (!seller) {
       return response.status(404).send({ message: "Seller not found" });
     }
     const final = {
@@ -253,10 +253,31 @@ app.get("/items", async (request, response) => {
     }
     response.status(200).send(final);
   }
-  catch(e){
+  catch (e) {
     response.status(500).send({
       message: "Error fetching item",
-      error:e,
+      error: e,
+    });
+  }
+});
+
+app.get("/search", async (request, response) => {
+  try {
+    const excludedId = request.get('id');
+    const search = request.get('search') || "";
+    const categoryHeader = request.get('category');
+    const selectedCategories = categoryHeader ? JSON.parse(categoryHeader) : [];
+    const query = {
+      sellerid: { $ne: excludedId },
+      ...(search && { name: { $regex: search, $options: "i" } }),
+      ...(selectedCategories.length > 0 && { category: { $in: selectedCategories } }),
+    };
+    const items = await Item.find(query);
+    response.status(200).send(items);
+  } catch (error) {
+    response.status(500).send({
+      message: "Error fetching items",
+      error,
     });
   }
 });
