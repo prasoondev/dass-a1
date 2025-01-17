@@ -282,6 +282,33 @@ app.get("/search", async (request, response) => {
   }
 });
 
+app.post("/items", async (request, response) => {
+  const userId = request.get('userId');
+  const itemId = request.get('item');
+  if (!userId || !itemId) {
+    return response.status(400).json({ error: "Missing userId or item" });
+  }
+  try {
+    const item = await Item.findOne({ itemId: itemId });
+    if (!item) {
+      return response.status(404).json({ error: "Item not found" });
+    }
+    const user = await User.findOne({ userId: userId });
+    if (!user) {
+      return response.status(404).json({ error: "User not found" });
+    }
+    if (user.items.includes(itemId)) {
+      return response.status(400).json({ error: "Item already added" });
+    }
+    user.items.push(itemId);
+    await user.save();
+    response.json(user);
+  } catch (err) {
+    console.error(err);
+    response.status(500).json({ error: "Server error" });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
