@@ -16,7 +16,6 @@ const PORT = 3000;
 
 const allowedDomain = /iiit\.ac\.in$/;
 
-
 function verifyToken(token) {
   try {
     const decoded = jwt.verify(token, process.env.JWT_AUTH);
@@ -94,7 +93,6 @@ app.post("/login", (request, response) => {
           if (!passwordCheck) {
             return response.status(400).send({
               message: "Passwords does not match",
-              error,
             });
           }
 
@@ -136,9 +134,6 @@ app.post("/login", (request, response) => {
 app.get("/profile", async (request, response) => {
   const userId = request.get('userId');
   const token = request.get('token');
-
-  // console.log("Received userId:", userId);
-  // console.log("Received token:", token);
 
   if (!userId || !token) {
     return response.status(400).json({ error: "Missing userId or token" });
@@ -197,8 +192,6 @@ app.put("/profile", async (request, response) => {
   }
 });
 
-
-
 app.post("/sell", (request, response) => {
   const item = new Item({
     name: request.body.name,
@@ -226,7 +219,6 @@ app.post("/sell", (request, response) => {
 
 app.get("/buy", (request, response) => {
   const excludedId = request.get('id');
-  console.log("Excluded ID:", excludedId);
   Item.find()
     .then((items) => {
       const filteredItems = items.filter((item) => item.sellerid !== excludedId);
@@ -240,6 +232,34 @@ app.get("/buy", (request, response) => {
     });
 });
 
+app.get("/items", async (request, response) => {
+  try{
+    const itemId = request.get("item");
+    console.log(itemId);
+    const item = await Item.findOne({ itemId: itemId });
+    if(!item){
+      return response.status(404).send({ message: "Item not found" });
+    }
+    const seller = await User.findOne({ userId: item.sellerid });
+    if(!seller){
+      return response.status(404).send({ message: "Seller not found" });
+    }
+    const final = {
+      item,
+      seller: {
+        fname: seller.fname,
+        lname: seller.lname,
+      },
+    }
+    response.status(200).send(final);
+  }
+  catch(e){
+    response.status(500).send({
+      message: "Error fetching item",
+      error:e,
+    });
+  }
+});
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 import Cookies from 'universal-cookie';
 
@@ -7,6 +8,7 @@ function Buy() {
   const cookies = new Cookies();
   const uid = cookies.get('userId');
   const token = cookies.get('token');
+  let navigate = useNavigate();
   const [itemDetails, setItemDetails] = useState([]);
 
   useEffect(() => {
@@ -29,6 +31,10 @@ function Buy() {
       });
   }, [uid, token]);
 
+  const handleViewDetails = (itemId) => {
+    navigate(`/items/${itemId}`);
+  };
+
   return (
     <div>
       <h1>Buy</h1>
@@ -36,7 +42,7 @@ function Buy() {
         {itemDetails.length > 0 ? (
           itemDetails.map((item) => (
             <div 
-              key={item._id} 
+              key={item.itemId} 
               style={{
                 border: "1px solid #ccc",
                 borderRadius: "8px",
@@ -57,6 +63,7 @@ function Buy() {
                   padding: "8px 12px",
                   cursor: "pointer",
                 }}
+                onClick={() => handleViewDetails(item.itemId)}
               >
                 View Details
               </button>

@@ -67,7 +67,7 @@ function App() {
               <Orders />
             </ProtectedRoute>
           } />
-          <Route path="/items" element={
+          <Route path="/items/:itemId" element={
             <ProtectedRoute token={cookies.get("token")}>
               <Items />
             </ProtectedRoute>

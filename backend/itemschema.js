@@ -1,5 +1,12 @@
 const mongoose = require("mongoose");
 const UserSchema = new mongoose.Schema({
+
+    itemId: {
+            type: String,
+            required: true,
+            unique: true,
+            default: () => new mongoose.Types.ObjectId().toString(), // Generates a unique ID if not provided
+          },
     
     name: {
         type: String,

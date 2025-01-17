@@ -1,12 +1,44 @@
+import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import axios from "axios";
+
 function Items() {
-    return (
-      <div>
-        <h1>Items</h1>
-        <p>
-          Edit <code>src/pages/items.jsx</code> and save to test HMR
-        </p>
-      </div>
-    )
-  }
-  
-  export default Items
+  const { itemId } = useParams(); 
+  const ITEM_URL=`http://localhost:3000/items`;
+  const [item, setItemDetails] = useState(null);
+
+  useEffect(() => {
+    const configuration = {
+      method: "get",
+      url: ITEM_URL,
+      headers: {
+        'Content-Type': 'application/json',
+        'item': itemId,
+      },
+    };
+    axios(configuration)
+      .then((response) => {
+        setItemDetails(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching items:", error);
+      });
+  }, [itemId]);
+
+  return (
+    <div>
+      {item ? (
+        <div>
+          <h1>{item.item.name}</h1>
+          <p><strong>Price:</strong> ${item.item.price}</p>
+          <p><strong>Description:</strong> {item.item.description}</p>
+          <p><strong>Seller:</strong> {item.seller.fname} {item.seller.lname}</p>
+        </div>
+      ) : (
+        <p>Loading item details...</p>
+      )}
+    </div>
+  );
+}
+
+export default Items;
