@@ -9,6 +9,7 @@ function Cart() {
   const uid = cookies.get('userId');
   const [itemDetails, setItemDetails] = useState([]);
   const [reload, setReload] = useState(false);
+  const [cost, setCost] = useState(0);
   useEffect(() => {
     const refresh = () => {
     const configuration = {
@@ -24,6 +25,8 @@ function Cart() {
       .then((response) => {
         console.log(response.data);
         setItemDetails(response.data);
+        const cost = response.data.reduce((acc, item) => acc + item.price, 0);
+        setCost(cost);
       })
       .catch((error) => {
         console.error("Error fetching items:", error);
@@ -88,6 +91,7 @@ function Cart() {
         ) : (
           <p></p>
         )}
+        <p><strong>Total Cost:</strong>{cost}</p>
       </div>
       </div>
     )

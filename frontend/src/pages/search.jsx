@@ -75,9 +75,8 @@ function Search() {
           <input type="submit" value="Search" onClick={(e) => handleSearch(e)} />
         </form>
       ) : (
-        searchResults.map((item) => (
-          <>
-            <form>
+        <>
+        <form>
               <input type="text" name="fname" placeholder="Search items" value={search} onChange={(e) => setSearch(e.target.value)} />
               {["electronics", "consumeables", "dailyuse", "clothing", "furniture", "books", "memberships"].map((cat) => (
                 <label key={cat}>
@@ -91,6 +90,8 @@ function Search() {
               ))}
               <input type="submit" value="Search" onClick={(e) => handleSearch(e)} />
             </form>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "20px" }}>
+        {searchResults.map((item) => (
             <div
               key={item.itemId}
               style={{
@@ -118,8 +119,9 @@ function Search() {
                 View Details
               </button>
             </div>
-          </>
-        ))
+        ))}
+        </div>
+        </>
       )}
     </div>
   )
