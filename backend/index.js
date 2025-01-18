@@ -533,8 +533,10 @@ app.get("/orders", async (request, response) => {
     const transactionIds = user.orderhistory.map(order => order.transactionId);
     const transactions = await Transaction.find({ transactionId: { $in: transactionIds } });
     for (const element of transactions) {
-      const buyer = await User.findOne({ userId: element.sellerid });
-      element.sellerid = buyer.fname + " " + buyer.lname;
+      const seller = await User.findOne({ userId: element.sellerid });
+      element.sellerid = seller.fname + " " + seller.lname;
+      const buyer = await User.findOne({ userId: element.buyerid });
+      element.buyerid = buyer.fname + " " + buyer.lname;
       for(const package of user.orderhistory){
         if(package.transactionId === element.transactionId){
           element.hashedOTP = package.otp;
