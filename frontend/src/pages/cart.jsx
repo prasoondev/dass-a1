@@ -53,7 +53,9 @@ function Cart() {
         console.error("Error fetching items:", error);
       });
   };
-
+  const handleViewDetails = (itemId) => {
+    navigate(`/items/${itemId}`);
+  };
   return (
       <div>
         <h1>Cart</h1>
@@ -82,6 +84,19 @@ function Cart() {
                   padding: "8px 12px",
                   cursor: "pointer",
                 }}
+                onClick={() => handleViewDetails(item.itemId)}
+              >
+                View Details
+              </button>
+              <button 
+                style={{
+                  backgroundColor: "#007BFF",
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: "4px",
+                  padding: "8px 12px",
+                  cursor: "pointer",
+                }}
                 onClick={() => handleRemove(item.itemId)}
               >
                 Remove item
@@ -91,8 +106,21 @@ function Cart() {
         ) : (
           <p></p>
         )}
-        <p><strong>Total Cost:</strong>{cost}</p>
       </div>
+      <p><strong>Total Cost:</strong>{cost}</p>
+      <button 
+        style={{
+          backgroundColor: "#007BFF",
+          color: "#fff",
+          border: "none",
+          borderRadius: "4px",
+          padding: "8px 12px",
+          cursor: "pointer",
+        }}
+        // onClick={() => navigate('/checkout')}
+      >
+        Checkout
+      </button>
       </div>
     )
   }
