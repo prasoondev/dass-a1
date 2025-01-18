@@ -314,18 +314,35 @@ app.get("/cart", async (request, response) => {
   if (!userId) {
     return response.status(400).json({ error: "Missing userId" });
   }
+
   try {
     const user = await User.findOne({ userId: userId });
     if (!user) {
       return response.status(404).json({ error: "User not found" });
     }
+
+    // Fetch valid items from the database
     const items = await Item.find({ itemId: { $in: user.items } });
+
+    // Extract itemIds from the fetched items
+    const validItemIds = items.map(item => item.itemId);
+
+    // Check for invalid items in the user's array
+    const invalidItemIds = user.items.filter(itemId => !validItemIds.includes(itemId));
+
+    if (invalidItemIds.length > 0) {
+      // Remove invalid items from the user's array
+      user.items = user.items.filter(itemId => validItemIds.includes(itemId));
+      await user.save();
+    }
+
     response.status(200).send(items);
   } catch (err) {
     console.error(err);
     response.status(500).json({ error: "Server error" });
   }
 });
+
 
 app.patch("/cart", async (request, response) => {
   const userId = request.get('id');
@@ -348,6 +365,32 @@ app.patch("/cart", async (request, response) => {
     user.items.splice(index, 1);
     await user.save();
     response.json(user);
+  } catch (err) {
+    console.error(err);
+    response.status(500).json({ error: "Server error" });
+  }
+});
+
+app.delete("/buy", async (request, response) => {
+  const userId = request.get('id');
+  if (!userId) {
+    return response.status(400).json({ error: "Missing userId" });
+  }
+  try {
+    const user = await User.findOne({ userId: userId });
+    if (!user) {
+      return response.status(404).json({ error: "User not found" });
+    }
+    const itemId = request.get('item');
+    if (!itemId) {
+      return response.status(400).json({ error: "Missing item" });
+    }
+    const item = await Item.findOne({ itemId: itemId });
+    if (!item) {
+      return response.status(404).json({ error: "Item not found" });
+    }
+    await Item.deleteOne({ itemId: itemId });
+    response.status(200).json({ message: "Item successfully deleted from database and user cart." });
   } catch (err) {
     console.error(err);
     response.status(500).json({ error: "Server error" });

@@ -1,11 +1,13 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Cookies from 'universal-cookie';
 
 function Items() {
   const { itemId } = useParams(); 
   const ITEM_URL=`http://localhost:3000/items`;
+  let navigate = useNavigate();
   const cookies = new Cookies();
   const uid = cookies.get('userId');
   const [item, setItemDetails] = useState(null);
@@ -25,6 +27,7 @@ function Items() {
       })
       .catch((error) => {
         console.error("Error fetching items:", error);
+        navigate('/search');
       });
   }, [itemId]);
 

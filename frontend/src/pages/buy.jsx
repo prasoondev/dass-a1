@@ -9,9 +9,11 @@ function Buy() {
   const uid = cookies.get('userId');
   const token = cookies.get('token');
   let navigate = useNavigate();
+  const [reload, setReload] = useState(false);
   const [itemDetails, setItemDetails] = useState([]);
 
   useEffect(() => {
+    const refresh = () => {
     const configuration = {
       method: "get",
       url: BUY_URL,
@@ -29,10 +31,27 @@ function Buy() {
       .catch((error) => {
         console.error("Error fetching items:", error);
       });
-  }, [uid, token]);
+    };
+    refresh();
+  }, [uid, token, reload]);
 
   const handleDelete = (itemId) => {
-    navigate(`/buy`);
+    const configuration = {
+      method: "delete",
+      url: BUY_URL,
+      headers: {
+        'Content-Type': 'application/json',
+        'id': uid,
+        'item': itemId,
+      },
+    };
+    axios(configuration)
+      .then((response) => {
+        setReload(!reload);
+      })
+      .catch((error) => {
+        console.error("Error fetching items:", error);
+      });
   };
 
   return (
@@ -70,7 +89,7 @@ function Buy() {
             </div>
           ))
         ) : (
-          <p>Loading items...</p>
+          <p></p>
         )}
       </div>
     </div>
