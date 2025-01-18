@@ -49,7 +49,7 @@ function Deliver() {
               <h3>{item.item.name}</h3>
               <p><strong>Price:</strong> ${item.item.price}</p>
               <p><strong>Description:</strong> {item.item.description}</p>
-              <p><strong>Buyer:</strong> {item.buyer.fname} {item.buyer.lname}</p>
+              <p><strong>Buyer:</strong> {item.buyer}</p>
               <button 
                 style={{
                   backgroundColor: "#007BFF",

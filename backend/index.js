@@ -419,15 +419,17 @@ app.post("/cart", async (request, response) => {
     const items = await Item.find({ itemId: { $in: user.items } });
     for (const element of items) {
       const seller= await User.findOne({ userId: element.sellerid });
+      const sellername= seller.fname + " " + seller.lname;
+      const buyername= user.fname + " " + user.lname;
       const topush={
         item: element,
-        buyer: user,
-        staus: "pending",
+        buyer: buyername,
+        status: "pending",
+        seller: sellername,
       };
       seller.deliver.push(topush);
       await seller.save();
       user.orderhistory.push(topush);
-      await user.save();
     }
     for (const element of items) {
       await Item.deleteOne({ itemId: element.itemId});
@@ -454,6 +456,25 @@ app.get("/deliver", async (request, response) => {
       return response.status(404).json({ error: "User not found" });
     }
     response.status(200).json(user.deliver);
+  }
+  catch (err) {
+    console.error(err);
+    response.status(500).json({ error: "Server error" });
+  }
+});
+
+app.get("/orders", async (request, response) => {
+  // response.status(200).send("Delivery endpoint");
+  const userId = request.get('id');
+  if (!userId) {
+    return response.status(400).json({ error: "Missing userId" });
+  }
+  try {
+    const user = await User.findOne({ userId: userId });
+    if (!user) {
+      return response.status(404).json({ error: "User not found" });
+    }
+    response.status(200).json(user.orderhistory);
   }
   catch (err) {
     console.error(err);
