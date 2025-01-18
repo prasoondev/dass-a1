@@ -549,6 +549,52 @@ app.get("/orders", async (request, response) => {
   }
 });
 
+app.post("/transaction", async (request, response) => {
+  const userId = request.get('uid');
+  if (!userId) {
+    return response.status(400).json({ error: "Missing userId" });
+  }
+  try {
+    const user = await User.findOne({userId: userId});
+    if (!user) {
+      return response.status(404).json({ error: "User not found" });
+    }
+    const transactionId = request.get('transactionId');
+    console.log(transactionId);
+    const otp = request.get('otp');
+    const transaction = await Transaction.findOne({ transactionId: transactionId });
+    console.log(transaction);
+    if (!transaction) {
+      return response.status(404).json({ error: "Transaction not found" });
+    }
+    const seller = await User.findOne({ userId: transaction.sellerid });
+    if (!seller) {
+      return response.status(404).json({ error: "Seller not found" });
+    }
+    if (seller.userId !== userId) {
+      return response.status(403).json({ error: "User not authorized" });
+    }
+    const otpMatch = await bcrypt.compare(otp, transaction.hashedOTP);
+    if (!otpMatch) {
+      return response.status(400).json({ error: "Invalid OTP" });
+    }
+    transaction.status = "delivered";
+    await transaction.save();
+    const buyerpackage = {
+      transactionId: transaction.transactionId,
+      otp: '000000',
+    }
+    user.orderhistory.push(buyerpackage);
+    user.deliver = user.deliver.filter((id) => id !== transactionId);
+    await user.save();
+    response.status(200).json({ message: "Transaction completed successfully" });
+  }
+  catch (err) {
+    console.error(err);
+    response.status(500).json({ error: "Server error" });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });

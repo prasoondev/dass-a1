@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 import Cookies from 'universal-cookie';
 
@@ -6,6 +7,7 @@ function Deliver() {
   const DELIVERY_URL = 'http://localhost:3000/deliver';
   const cookies = new Cookies();
   const uid = cookies.get('userId');
+  let navigate = useNavigate();
   const [reload, setReload] = useState(false);
   const [itemDetails, setItemDetails] = useState([]);
   useEffect(() => {
@@ -30,6 +32,9 @@ function Deliver() {
     };
     refresh();
   }, [reload]);
+  const handleCompleteorder = (transactionId) => {
+    navigate(`/transaction/${transactionId}`);
+  };
     return (
       <div>
         <h1>Pending orders</h1>
@@ -59,7 +64,7 @@ function Deliver() {
                   padding: "8px 12px",
                   cursor: "pointer",
                 }}
-                // onClick={() => handleDelete(item.itemId)}
+                onClick={() => handleCompleteorder(item.transactionId)}
               >
                 Complete order
               </button>
