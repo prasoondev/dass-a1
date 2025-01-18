@@ -51,6 +51,20 @@ const UserSchema = new mongoose.Schema({
         default: [],
     },
 
+    deliver: {
+        type: Array,
+        required: false,
+        unique: false,
+        default: [],
+    },
+
+    orderhistory: {
+        type: Array,
+        required: false,
+        unique: false,
+        default: [],
+    },
+
     reviews: {
         type: Array,
         required: false,

@@ -23,7 +23,7 @@ function Cart() {
 
     axios(configuration)
       .then((response) => {
-        console.log(response.data);
+        // console.log(response.data);
         setItemDetails(response.data);
         const cost = response.data.reduce((acc, item) => acc + item.price, 0);
         setCost(cost);
@@ -55,6 +55,24 @@ function Cart() {
   };
   const handleViewDetails = (itemId) => {
     navigate(`/items/${itemId}`);
+  };
+  const handleCheckout = () => {
+    const configuration = {
+      method: "post",
+      url: CART_URL,
+      headers: {
+        'Content-Type': 'application/json',
+        'id': uid,
+      },
+    };
+    axios(configuration)
+      .then((response) => {
+        setReload(!reload);
+      })
+      .catch((error) => {
+        console.error("Error fetching items:", error);
+      }
+    );
   };
   return (
       <div>
@@ -117,7 +135,7 @@ function Cart() {
           padding: "8px 12px",
           cursor: "pointer",
         }}
-        // onClick={() => navigate('/checkout')}
+        onClick={() => handleCheckout()}
       >
         Checkout
       </button>

@@ -406,6 +406,61 @@ app.delete("/buy", async (request, response) => {
   }
 });
 
+app.post("/cart", async (request, response) => {
+  const userId = request.get('id');
+  if (!userId) {
+    return response.status(400).json({ error: "Missing userId" });
+  }
+  try {
+    const user = await User.findOne({ userId: userId });
+    if (!user) {
+      return response.status(404).json({ error: "User not found" });
+    }
+    const items = await Item.find({ itemId: { $in: user.items } });
+    for (const element of items) {
+      const seller= await User.findOne({ userId: element.sellerid });
+      const topush={
+        item: element,
+        buyer: user,
+        staus: "pending",
+      };
+      seller.deliver.push(topush);
+      await seller.save();
+      user.orderhistory.push(topush);
+      await user.save();
+    }
+    for (const element of items) {
+      await Item.deleteOne({ itemId: element.itemId});
+    }
+    user.items = [];
+    await user.save();
+    response.status(200).json({ message: "Checkout successful" });
+  }
+  catch (err) {
+    console.error(err);
+    response.status(500).json({ error: "Server error" });
+  }
+});
+
+app.get("/deliver", async (request, response) => {
+  // response.status(200).send("Delivery endpoint");
+  const userId = request.get('id');
+  if (!userId) {
+    return response.status(400).json({ error: "Missing userId" });
+  }
+  try {
+    const user = await User.findOne({ userId: userId });
+    if (!user) {
+      return response.status(404).json({ error: "User not found" });
+    }
+    response.status(200).json(user.deliver);
+  }
+  catch (err) {
+    console.error(err);
+    response.status(500).json({ error: "Server error" });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });
