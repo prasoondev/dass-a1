@@ -5,12 +5,14 @@ const User = require("./userschema");
 const dbConnect = require("./dbconnect");
 const jwt = require("jsonwebtoken");
 const Item = require("./itemschema");
+const Transaction = require("./transactionschema");
 require('dotenv').config()
 
 dbConnect();
-const app = express();
 const cors = require("cors");
-app.use(cors());
+const app = express();
+app.use(cors({ origin: "*" }));
+app.options("*", cors());
 app.use(express.json());
 const PORT = 3000;
 
@@ -343,7 +345,7 @@ app.get("/cart", async (request, response) => {
       const filteredItems = items.filter(item => item.sellerid !== userId);
       response.status(200).send(filteredItems);
       return;
-  }
+    }
 
     response.status(200).send(filteredItems);
   } catch (err) {
@@ -418,21 +420,62 @@ app.post("/cart", async (request, response) => {
     }
     const items = await Item.find({ itemId: { $in: user.items } });
     for (const element of items) {
-      const seller= await User.findOne({ userId: element.sellerid });
-      const sellername= seller.fname + " " + seller.lname;
-      const buyername= user.fname + " " + user.lname;
-      const topush={
-        item: element,
-        buyer: buyername,
-        status: "pending",
-        seller: sellername,
-      };
-      seller.deliver.push(topush);
-      await seller.save();
-      user.orderhistory.push(topush);
+      const seller = await User.findOne({ userId: element.sellerid });
+      const otp = Math.floor(100000 + Math.random() * 900000);
+      bcrypt
+        .hash(otp.toString(), 10)
+        .then((hashedOTP) => {
+          // create a new user instance and collect the data
+          const transaction = new Transaction({
+            name: element.name,
+            price: element.price,
+            description: element.description,
+            sellerid: element.sellerid,
+            buyerid: userId,
+            hashedOTP: hashedOTP,
+          });
+          transaction
+            .save()
+            .then((result) => {
+              seller.deliver.push(transaction.transactionId);
+              seller.save()
+                .then((result) => {
+                  const buyerpackage = {
+                    transactionId: transaction.transactionId,
+                    otp: otp.toString(),
+                  }
+                  user.orderhistory.push(buyerpackage);
+                  user.save()
+                    .then((result) => {
+                      response.status(200).send({
+                        message: "Transaction created successfully",
+                        result,
+                      });
+                    })
+                    .catch((error) => {
+                      response.status(500).send({
+                        message: "Error updating buyer",
+                        error,
+                      });
+                    });
+                })
+                .catch((error) => {
+                  response.status(500).send({
+                    message: "Error updating seller",
+                    error,
+                  });
+                });
+            })
+            .catch((error) => {
+              response.status(500).send({
+                message: "Error creating transaction",
+                error,
+              });
+            });
+        });
     }
     for (const element of items) {
-      await Item.deleteOne({ itemId: element.itemId});
+      await Item.deleteOne({ itemId: element.itemId });
     }
     user.items = [];
     await user.save();
@@ -455,7 +498,12 @@ app.get("/deliver", async (request, response) => {
     if (!user) {
       return response.status(404).json({ error: "User not found" });
     }
-    response.status(200).json(user.deliver);
+    const transactions = await Transaction.find({ transactionId: { $in: user.deliver } });
+    for (const element of transactions) {
+      const buyer = await User.findOne({ userId: element.buyerid });
+      element.buyerid = buyer ? buyer.fname + " " + buyer.lname : "Unknown Buyer";
+    }
+    response.status(200).json(transactions);
   }
   catch (err) {
     console.error(err);
@@ -474,7 +522,18 @@ app.get("/orders", async (request, response) => {
     if (!user) {
       return response.status(404).json({ error: "User not found" });
     }
-    response.status(200).json(user.orderhistory);
+    const transactionIds = user.orderhistory.map(order => order.transactionId);
+    const transactions = await Transaction.find({ transactionId: { $in: transactionIds } });
+    for (const element of transactions) {
+      const buyer = await User.findOne({ userId: element.sellerid });
+      element.sellerid = buyer.fname + " " + buyer.lname;
+      for(const package of user.orderhistory){
+        if(package.transactionId === element.transactionId){
+          element.hashedOTP = package.otp;
+        }
+      }
+    }
+    response.status(200).json(transactions);
   }
   catch (err) {
     console.error(err);

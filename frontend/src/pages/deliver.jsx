@@ -22,7 +22,7 @@ function Deliver() {
       axios(configuration)
         .then((response) => {
           setItemDetails(response.data);
-          // console.log(response.data);
+          console.log(response.data);
         })
         .catch((error) => {
           console.error("Error fetching items:", error);
@@ -46,10 +46,10 @@ function Deliver() {
                 boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
               }}
             >
-              <h3>{item.item.name}</h3>
-              <p><strong>Price:</strong> ${item.item.price}</p>
-              <p><strong>Description:</strong> {item.item.description}</p>
-              <p><strong>Buyer:</strong> {item.buyer}</p>
+              <h3>{item.name}</h3>
+              <p><strong>Price:</strong> ${item.price}</p>
+              <p><strong>Description:</strong> {item.description}</p>
+              <p><strong>Buyer:</strong> {item.buyerid}</p>
               <button 
                 style={{
                   backgroundColor: "#007BFF",

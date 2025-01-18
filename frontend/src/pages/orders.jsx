@@ -44,11 +44,16 @@ function Orders() {
                 boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
               }}
             >
-              <h3>{item.item.name}</h3>
-              <p><strong>Price:</strong> ${item.item.price}</p>
-              <p><strong>Description:</strong> {item.item.description}</p>
-              <p><strong>Seller:</strong> {item.seller}</p>
+              <h3>{item.name}</h3>
+              <p><strong>Price:</strong> ${item.price}</p>
+              <p><strong>Description:</strong> {item.description}</p>
+              <p><strong>Seller:</strong> {item.sellerid}</p>
               <p><strong>Status:</strong> {item.status}</p>
+              {item.status=='pending' ? (
+              <p><strong>OTP:</strong> {item.hashedOTP}</p>
+              ):(
+                <p></p>
+              )}
             </div>
           ))
         ) : (
