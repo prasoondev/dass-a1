@@ -323,9 +323,11 @@ app.get("/cart", async (request, response) => {
 
     // Fetch valid items from the database
     const items = await Item.find({ itemId: { $in: user.items } });
-
+    const filteredItems = items.filter(item => item.sellerid !== userId);
+    // console.log(filteredItems);
+    // console.log(userId);
     // Extract itemIds from the fetched items
-    const validItemIds = items.map(item => item.itemId);
+    const validItemIds = filteredItems.map(item => item.itemId);
 
     // Check for invalid items in the user's array
     const invalidItemIds = user.items.filter(itemId => !validItemIds.includes(itemId));
@@ -334,9 +336,13 @@ app.get("/cart", async (request, response) => {
       // Remove invalid items from the user's array
       user.items = user.items.filter(itemId => validItemIds.includes(itemId));
       await user.save();
-    }
+      const items = await Item.find({ itemId: { $in: user.items } });
+      const filteredItems = items.filter(item => item.sellerid !== userId);
+      response.status(200).send(filteredItems);
+      return;
+  }
 
-    response.status(200).send(items);
+    response.status(200).send(filteredItems);
   } catch (err) {
     console.error(err);
     response.status(500).json({ error: "Server error" });

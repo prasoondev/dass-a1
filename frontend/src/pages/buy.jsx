@@ -56,7 +56,7 @@ function Buy() {
 
   return (
     <div>
-      <h1>Buy</h1>
+      <h1>My items</h1>
       <div style={{ display: "flex", flexWrap: "wrap", gap: "20px" }}>
         {itemDetails.length > 0 ? (
           itemDetails.map((item) => (
