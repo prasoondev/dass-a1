@@ -12,7 +12,15 @@ dbConnect();
 const cors = require("cors");
 const app = express();
 app.use(cors({ origin: "*" }));
-app.options("*", cors());
+app.options("*", (req, res) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Content-Type, Authorization, X-Requested-With"
+  );
+  res.sendStatus(200);
+});
 app.use(express.json());
 const PORT = 3000;
 
