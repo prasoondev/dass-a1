@@ -293,6 +293,9 @@ app.post("/items", async (request, response) => {
     if (!item) {
       return response.status(404).json({ error: "Item not found" });
     }
+    if (item.sellerid === userId) {
+      return response.status(400).json({ error: "Cannot add your own item to cart" });
+    }
     const user = await User.findOne({ userId: userId });
     if (!user) {
       return response.status(404).json({ error: "User not found" });
