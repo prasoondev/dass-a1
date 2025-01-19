@@ -534,9 +534,9 @@ app.get("/orders", async (request, response) => {
     const transactions = await Transaction.find({ transactionId: { $in: transactionIds } });
     for (const element of transactions) {
       const seller = await User.findOne({ userId: element.sellerid });
-      element.sellerid = seller.fname + " " + seller.lname;
+      element.sellername = seller.fname + " " + seller.lname;
       const buyer = await User.findOne({ userId: element.buyerid });
-      element.buyerid = buyer.fname + " " + buyer.lname;
+      element.buyername = buyer.fname + " " + buyer.lname;
       for(const package of user.orderhistory){
         if(package.transactionId === element.transactionId){
           element.hashedOTP = package.otp;
@@ -595,6 +595,15 @@ app.post("/transaction", async (request, response) => {
     console.error(err);
     response.status(500).json({ error: "Server error" });
   }
+});
+
+app.get("/review",async(request, response) =>{
+  const userId=request.get('user');
+  if (!userId) {
+    return response.status(400).json({ error: "Missing userId" });
+  }
+  try {}
+  catch (err){}
 });
 
 app.listen(PORT, () => {

@@ -15,6 +15,7 @@ import Register from './pages/register'
 import Sell from './pages/sell'
 import Buy from './pages/buy'
 import Transaction from './pages/transaction'
+import Review from './pages/review'
 import Layout from './Layout'
 import ProtectedRoute from './components/protectedroute';
 
@@ -77,6 +78,11 @@ function App() {
         <Route path="/transaction/:transactionId" element={
             <ProtectedRoute token={cookies.get("token")}>
               <Transaction />
+            </ProtectedRoute>
+          } />
+        <Route path="/review/:userId" element={
+            <ProtectedRoute token={cookies.get("token")}>
+              <Review />
             </ProtectedRoute>
           } />
       </Routes>

@@ -47,8 +47,8 @@ function Orders() {
               <h3>{item.name}</h3>
               <p><strong>Price:</strong> ${item.price}</p>
               <p><strong>Description:</strong> {item.description}</p>
-              <p><strong>Seller:</strong> {item.sellerid}</p>
-              <p><strong>Buyer:</strong> {item.buyerid}</p>
+              <p><strong>Seller:</strong> {item.sellername}</p>
+              <p><strong>Buyer:</strong> {item.buyername}</p>
               <p><strong>Status:</strong> {item.status}</p>
               {item.status=='pending' ? (
               <p><strong>OTP:</strong> {item.hashedOTP}</p>

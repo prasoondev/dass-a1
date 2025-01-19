@@ -39,6 +39,20 @@ const TransactionSchema = new mongoose.Schema({
         unique: false,
     },
 
+    sellername: {
+        type: String,
+        required: false,
+        unique: false,
+        default: "".
+    },
+
+    buyername: {
+        type: String,
+        required: false,
+        unique: false,
+        default: "",
+    },
+
     status: {
         type: String,
         required: [true, "Please provide a status!"],
