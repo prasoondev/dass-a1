@@ -74,8 +74,7 @@ function App() {
               <Items />
             </ProtectedRoute>
           } />
-        </Route>
-        <Route path="/transaction/:transactionId" element={
+          <Route path="/transaction/:transactionId" element={
             <ProtectedRoute token={cookies.get("token")}>
               <Transaction />
             </ProtectedRoute>
@@ -85,6 +84,7 @@ function App() {
               <Review />
             </ProtectedRoute>
           } />
+        </Route>
       </Routes>
     </Router>
   )

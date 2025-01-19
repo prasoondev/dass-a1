@@ -5,20 +5,24 @@ import axios from "axios";
 import Cookies from 'universal-cookie';
 
 function Review() {
-  const { itemId } = useParams(); 
+  const { userId } = useParams(); 
   const REVIEW_URL=`http://localhost:3000/review`;
   let navigate = useNavigate();
   const cookies = new Cookies();
   const uid = cookies.get('userId');
   const [user, setUser] = useState(null);
+  const [reload, setReload] = useState(false);
+  const [review, setReview] = useState("");
 
   useEffect(() => {
+    const refresh =() =>{
     const configuration = {
       method: "get",
       url: REVIEW_URL,
       headers: {
         'Content-Type': 'application/json',
-        'user': uid,
+        'user': userId,
+        'id': uid,
       },
     };
     axios(configuration)
@@ -29,21 +33,23 @@ function Review() {
         console.error("Error fetching items:", error);
         navigate('/search');
       });
-  }, [itemId]);
+    };
+    refresh();
+  }, [userId, reload]);
 
-  const addtoCart = () => {
+  const addReview = () => {
     const configuration = {
       method: "post",
-      url: ITEM_URL,
+      url: REVIEW_URL,
       headers: {
         'Content-Type': 'application/json',
-        'userId': uid,
-        'item': itemId,
+        'user': userId,
+        'review': review,
       },
     };
     axios(configuration)
       .then((response) => {
-        console.log(response.data);
+        setReload(!reload);
       })
       .catch((error) => {
         error = new Error();
@@ -53,9 +59,10 @@ function Review() {
 
   return (
     <div>
-      {item ? (
+      <h1>Reviews</h1>
+      {user ? (
         <div>
-          <h1><strong>Name:</strong> {user.fname} {user.lname}</h1>
+          <p><strong>Name:</strong> {user.fname} {user.lname}</p>
           <p><strong>Email:</strong> {user.email}</p>
           <p><strong>Contact:</strong> {user.contact}</p>
           {user.reviews.length>0 ? (
@@ -75,10 +82,14 @@ function Review() {
           ):(
             <p></p>
           )}
-          {/* <button onClick={addtoCart}>Add to Cart</button> */}
+              <input type="text" name='review' value={review} onChange={(e) => setReview(e.target.value)}/>
+              <button onClick={addReview}>Leave a review</button>
         </div>
       ) : (
-        <p></p>
+        <div>
+              <input type="text" name='review' value={review} onChange={(e) => setReview(e.target.value)}/>
+              <button onClick={addReview}>Leave a review</button>
+              </div>
       )}
     </div>
   );

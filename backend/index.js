@@ -11,7 +11,7 @@ require('dotenv').config()
 dbConnect();
 const cors = require("cors");
 const app = express();
-app.use(cors({ origin: "*" }));
+app.use(cors({ origin: "http://localhost:5173" }));
 app.options("*", (req, res) => {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
@@ -598,12 +598,50 @@ app.post("/transaction", async (request, response) => {
 });
 
 app.get("/review",async(request, response) =>{
+  const id=request.get('id');
+  const userId=request.get('user');
+  if (!userId||!id) {
+    return response.status(400).json({ error: "Missing userId" });
+  }
+  try {
+    const user = await User.findOne({userId: userId});
+    if (!user) {
+      return response.status(404).json({ error: "User not found" });
+    }
+    if(userId==id){
+      return response.status(400).json({ error: "Unauthorized" });
+    }
+    response.status(200).json(user);
+  }
+  catch (err){
+    console.error(err);
+    response.status(500).json({ error: "Server error" });
+  }
+});
+
+app.post("/review",async(request,response)=>{
   const userId=request.get('user');
   if (!userId) {
     return response.status(400).json({ error: "Missing userId" });
   }
-  try {}
-  catch (err){}
+  try {
+    const user = await User.findOne({userId: userId});
+    if (!user) {
+      return response.status(404).json({ error: "User not found" });
+    }
+    const review=request.get('review');
+    if (!review||review=='') {
+      return response.status(400).json({ error: "Missing review" });
+    }
+    user.reviews.push(review);
+    await user.save();
+    console.log(review);
+    response.status(200).json(review);
+  }
+  catch (err){
+    console.error(err);
+    response.status(500).json({ error: "Server error" });
+  }
 });
 
 app.listen(PORT, () => {

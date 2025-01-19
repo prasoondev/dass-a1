@@ -43,7 +43,7 @@ const TransactionSchema = new mongoose.Schema({
         type: String,
         required: false,
         unique: false,
-        default: "".
+        default: "",
     },
 
     buyername: {
