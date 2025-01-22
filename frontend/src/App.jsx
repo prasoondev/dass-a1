@@ -30,57 +30,57 @@ function App() {
         {/*Private routes*/}
         <Route element={<Layout />}>
           <Route path="/search" element={
-            <ProtectedRoute token={cookies.get("token")}>
+            <ProtectedRoute token={cookies.get("token")} user={cookies.get("userId")}>
               <Search />
             </ProtectedRoute>
             } />
           <Route path="/profile" element={
-            <ProtectedRoute token={cookies.get("token")}>
+            <ProtectedRoute token={cookies.get("token")} user={cookies.get("userId")}>
               <Profile />
             </ProtectedRoute>
           } />
           <Route path="/support" element={
-            <ProtectedRoute token={cookies.get("token")}>
+            <ProtectedRoute token={cookies.get("token")} user={cookies.get("userId")}>
               <Support />
             </ProtectedRoute>
           } />
           <Route path="/cart" element={
-            <ProtectedRoute token={cookies.get("token")}>
+            <ProtectedRoute token={cookies.get("token")} user={cookies.get("userId")}>
               <Cart />
             </ProtectedRoute>
           } />
           <Route path="/sell" element={
-            <ProtectedRoute token={cookies.get("token")}>
+            <ProtectedRoute token={cookies.get("token")} user={cookies.get("userId")}>
               <Sell />
             </ProtectedRoute>
           } />
           <Route path="/buy" element={
-            <ProtectedRoute token={cookies.get("token")}>
+            <ProtectedRoute token={cookies.get("token")} user={cookies.get("userId")}>
               <Buy />
             </ProtectedRoute>
           } />
           <Route path="/deliver" element={
-            <ProtectedRoute token={cookies.get("token")}>
+            <ProtectedRoute token={cookies.get("token")} user={cookies.get("userId")}>
               <Deliver />
             </ProtectedRoute>
           } />
           <Route path="/orders" element={
-            <ProtectedRoute token={cookies.get("token")}>
+            <ProtectedRoute token={cookies.get("token")} user={cookies.get("userId")}>
               <Orders />
             </ProtectedRoute>
           } />
           <Route path="/items/:itemId" element={
-            <ProtectedRoute token={cookies.get("token")}>
+            <ProtectedRoute token={cookies.get("token")} user={cookies.get("userId")}>
               <Items />
             </ProtectedRoute>
           } />
           <Route path="/transaction/:transactionId" element={
-            <ProtectedRoute token={cookies.get("token")}>
+            <ProtectedRoute token={cookies.get("token")} user={cookies.get("userId")}>
               <Transaction />
             </ProtectedRoute>
           } />
         <Route path="/review/:userId" element={
-            <ProtectedRoute token={cookies.get("token")}>
+            <ProtectedRoute token={cookies.get("token")} user={cookies.get("userId")}>
               <Review />
             </ProtectedRoute>
           } />

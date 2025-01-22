@@ -54,6 +54,7 @@ function Profile() {
     };
     axios(configuration)
       .then((response) => {
+        console.log(response.data);
         setUserDetails(response.data);
       })
       .catch((error) => {

@@ -43,6 +43,24 @@ function verifyToken(token) {
   }
 }
 
+app.get("/protectedroute",(request,response)=>{
+  const userId = request.get('userId');
+  const token = request.get('token');
+
+  if (!userId || !token) {
+    return response.status(400).json({ error: "Missing userId or token" });
+  }
+
+  const decodedToken = verifyToken(token);
+  if (!decodedToken) {
+    return response.status(401).json({ error: "Invalid or expired token" });
+  }
+  if (decodedToken.userId !== userId) {
+    return response.status(403).json({ error: "User not authorized" });
+  }
+  return response.status(200).send({message:"success"});
+});
+
 // register endpoint
 app.post("/register", (request, response) => {
   if (!allowedDomain.test(request.body.email)) {
