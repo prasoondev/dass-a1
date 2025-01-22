@@ -7,6 +7,7 @@ function Deliver() {
   const DELIVERY_URL = 'http://localhost:3000/deliver';
   const cookies = new Cookies();
   const uid = cookies.get('userId');
+  const token = cookies.get('token');
   let navigate = useNavigate();
   const [reload, setReload] = useState(false);
   const [itemDetails, setItemDetails] = useState([]);
@@ -18,6 +19,7 @@ function Deliver() {
         headers: {
           'Content-Type': 'application/json',
           'id': uid,
+          'token': token,
         },
       };
 

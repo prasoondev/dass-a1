@@ -7,6 +7,7 @@ function Orders() {
   const cookies = new Cookies();
   let navigate = useNavigate();
   const uid = cookies.get('userId');
+  const token = cookies.get('token');
   const [reload, setReload] = useState(false);
   const [itemDetails, setItemDetails] = useState([]);
   useEffect(() => {
@@ -17,6 +18,7 @@ function Orders() {
         headers: {
           'Content-Type': 'application/json',
           'id': uid,
+          'token': token,
         },
       };
       axios(configuration)
@@ -38,6 +40,7 @@ function Orders() {
           'Content-Type': 'application/json',
           'id': uid,
           'transaction': transactionId,
+          'token': token,
         },
       };
       axios(configuration)

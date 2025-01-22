@@ -7,6 +7,7 @@ function Cart() {
   const cookies = new Cookies();
   let navigate = useNavigate();
   const uid = cookies.get('userId');
+  const token = cookies.get('token');
   const [itemDetails, setItemDetails] = useState([]);
   const [reload, setReload] = useState(false);
   const [cost, setCost] = useState(0);
@@ -18,6 +19,7 @@ function Cart() {
       headers: {
         'Content-Type': 'application/json',
         'id': uid,
+        'token': token,
       },
     };
 
@@ -43,6 +45,7 @@ function Cart() {
         'Content-Type': 'application/json',
         'id': uid,
         'item': itemId,
+        'token': token,
       },
     };
     axios(configuration)
@@ -63,6 +66,7 @@ function Cart() {
       headers: {
         'Content-Type': 'application/json',
         'id': uid,
+        'token': token,
       },
     };
     axios(configuration)

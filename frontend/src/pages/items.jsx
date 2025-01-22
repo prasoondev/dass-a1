@@ -9,6 +9,7 @@ function Items() {
   const ITEM_URL=`http://localhost:3000/items`;
   let navigate = useNavigate();
   const cookies = new Cookies();
+  const token = cookies.get('token');
   const uid = cookies.get('userId');
   const [item, setItemDetails] = useState(null);
 
@@ -19,6 +20,8 @@ function Items() {
       headers: {
         'Content-Type': 'application/json',
         'item': itemId,
+        'userId': uid,
+        'token': token,
       },
     };
     axios(configuration)
@@ -39,6 +42,7 @@ function Items() {
         'Content-Type': 'application/json',
         'userId': uid,
         'item': itemId,
+        'token': token,
       },
     };
     axios(configuration)

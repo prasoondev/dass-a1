@@ -10,6 +10,7 @@ function Review() {
   let navigate = useNavigate();
   const cookies = new Cookies();
   const uid = cookies.get('userId');
+  const token = cookies.get('token');
   const [user, setUser] = useState(null);
   const [reload, setReload] = useState(false);
   const [review, setReview] = useState("");
@@ -23,6 +24,7 @@ function Review() {
         'Content-Type': 'application/json',
         'user': userId,
         'id': uid,
+        'token': token,
       },
     };
     axios(configuration)
@@ -45,6 +47,8 @@ function Review() {
         'Content-Type': 'application/json',
         'user': userId,
         'review': review,
+        'userId': uid,
+        'token': token,
       },
     };
     axios(configuration)

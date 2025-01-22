@@ -72,7 +72,7 @@ function Profile() {
               <input type="text" name='fname' value={userDetails.fname} onChange={handleInputChange}/>
               <input type="text" name='lname' value={userDetails.lname} onChange={handleInputChange}/>
               <input type="number" name='age' value={userDetails.age} onChange={handleInputChange}/>
-              <input type="text" name='email' value={userDetails.email} onChange={handleInputChange}/>
+              {/* <input type="text" name='email' value={userDetails.email} onChange={handleInputChange}/> */}
               <input type="number" name='contact' value={userDetails.contact} onChange={handleInputChange}/>
               <button onClick={editProfile}>Save</button>
             </>

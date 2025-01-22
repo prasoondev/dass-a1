@@ -30,6 +30,8 @@ function Sell() {
           description,
           sellerid: uid,
           category: category,
+          userId: uid,
+          token: token,
         },
       };
       const handleSubmit = (e) => {

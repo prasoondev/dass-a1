@@ -43,6 +43,7 @@ function Buy() {
         'Content-Type': 'application/json',
         'id': uid,
         'item': itemId,
+        'token':token,
       },
     };
     axios(configuration)

@@ -12,6 +12,7 @@ function Transaction() {
   const cookies = new Cookies();
   const [otp, setOtp] = useState();
   const uid = cookies.get('userId');
+  const token = cookies.get('token');
   const configuration = {
     method: "post",
     url: TRANSACTION_URL,
@@ -20,6 +21,7 @@ function Transaction() {
       uid: uid,
       transactionId: transactionId,
       otp: otp,
+      token: token,
     },
   };
   const handleSubmit = (e) => {

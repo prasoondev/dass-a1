@@ -8,6 +8,7 @@ function Search() {
   const cookies = new Cookies();
   let navigate = useNavigate();
   const uid = cookies.get('userId');
+  const token = cookies.get('token');
   const [search, setSearch] = useState("");
   const [searchResults, setSearchresults] = useState(null);
   const [category, setCategory] = useState([]);
@@ -38,6 +39,8 @@ function Search() {
       'id': uid,
       'search': search,
       'category': JSON.stringify(category),
+      'userId': uid,
+      'token': token,
     },
   };
   const handleSearch = (e) => {

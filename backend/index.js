@@ -229,6 +229,20 @@ app.put("/profile", async (request, response) => {
 });
 
 app.post("/sell", (request, response) => {
+  const userId = request.body.userId;
+  const token = request.body.token;
+
+  if (!userId || !token) {
+    return response.status(400).json({ error: "Missing userId or token" });
+  }
+
+  const decodedToken = verifyToken(token);
+  if (!decodedToken) {
+    return response.status(401).json({ error: "Invalid or expired token" });
+  }
+  if (decodedToken.userId !== userId) {
+    return response.status(403).json({ error: "User not authorized" });
+  }
   const item = new Item({
     name: request.body.name,
     price: Number(request.body.price),
@@ -254,6 +268,20 @@ app.post("/sell", (request, response) => {
 });
 
 app.get("/buy", (request, response) => {
+  const userId = request.get('id');
+  const token = request.get('token');
+
+  if (!userId || !token) {
+    return response.status(400).json({ error: "Missing userId or token" });
+  }
+
+  const decodedToken = verifyToken(token);
+  if (!decodedToken) {
+    return response.status(401).json({ error: "Invalid or expired token" });
+  }
+  if (decodedToken.userId !== userId) {
+    return response.status(403).json({ error: "User not authorized" });
+  }
   const excludedId = request.get('id');
   Item.find()
     .then((items) => {
@@ -269,6 +297,20 @@ app.get("/buy", (request, response) => {
 });
 
 app.get("/items", async (request, response) => {
+  const userId = request.get('userId');
+  const token = request.get('token');
+
+  if (!userId || !token) {
+    return response.status(400).json({ error: "Missing userId or token" });
+  }
+
+  const decodedToken = verifyToken(token);
+  if (!decodedToken) {
+    return response.status(401).json({ error: "Invalid or expired token" });
+  }
+  if (decodedToken.userId !== userId) {
+    return response.status(403).json({ error: "User not authorized" });
+  }
   try {
     const itemId = request.get("item");
     // console.log(itemId);
@@ -298,6 +340,20 @@ app.get("/items", async (request, response) => {
 });
 
 app.get("/search", async (request, response) => {
+  const userId = request.get('userId');
+  const token = request.get('token');
+
+  if (!userId || !token) {
+    return response.status(400).json({ error: "Missing userId or token" });
+  }
+
+  const decodedToken = verifyToken(token);
+  if (!decodedToken) {
+    return response.status(401).json({ error: "Invalid or expired token" });
+  }
+  if (decodedToken.userId !== userId) {
+    return response.status(403).json({ error: "User not authorized" });
+  }
   try {
     const excludedId = request.get('id');
     const search = request.get('search') || "";
@@ -321,6 +377,20 @@ app.get("/search", async (request, response) => {
 app.post("/items", async (request, response) => {
   const userId = request.get('userId');
   const itemId = request.get('item');
+  // const userId = request.get('userId');
+  const token = request.get('token');
+
+  if (!userId || !token) {
+    return response.status(400).json({ error: "Missing userId or token" });
+  }
+
+  const decodedToken = verifyToken(token);
+  if (!decodedToken) {
+    return response.status(401).json({ error: "Invalid or expired token" });
+  }
+  if (decodedToken.userId !== userId) {
+    return response.status(403).json({ error: "User not authorized" });
+  }
   if (!userId || !itemId) {
     return response.status(400).json({ error: "Missing userId or item" });
   }
@@ -350,6 +420,20 @@ app.post("/items", async (request, response) => {
 
 app.get("/cart", async (request, response) => {
   const userId = request.get('id');
+  const token = request.get('token');
+
+  if (!userId || !token) {
+    return response.status(400).json({ error: "Missing userId or token" });
+  }
+
+  const decodedToken = verifyToken(token);
+  if (!decodedToken) {
+    return response.status(401).json({ error: "Invalid or expired token" });
+  }
+  if (decodedToken.userId !== userId) {
+    return response.status(403).json({ error: "User not authorized" });
+  }
+  // const userId = request.get('id');
   if (!userId) {
     return response.status(400).json({ error: "Missing userId" });
   }
@@ -390,6 +474,20 @@ app.get("/cart", async (request, response) => {
 
 app.patch("/cart", async (request, response) => {
   const userId = request.get('id');
+  const token = request.get('token');
+
+  if (!userId || !token) {
+    return response.status(400).json({ error: "Missing userId or token" });
+  }
+
+  const decodedToken = verifyToken(token);
+  if (!decodedToken) {
+    return response.status(401).json({ error: "Invalid or expired token" });
+  }
+  if (decodedToken.userId !== userId) {
+    return response.status(403).json({ error: "User not authorized" });
+  }
+  // const userId = request.get('id');
   if (!userId) {
     return response.status(400).json({ error: "Missing userId" });
   }
@@ -417,6 +515,20 @@ app.patch("/cart", async (request, response) => {
 
 app.delete("/buy", async (request, response) => {
   const userId = request.get('id');
+  const token = request.get('token');
+
+  if (!userId || !token) {
+    return response.status(400).json({ error: "Missing userId or token" });
+  }
+
+  const decodedToken = verifyToken(token);
+  if (!decodedToken) {
+    return response.status(401).json({ error: "Invalid or expired token" });
+  }
+  if (decodedToken.userId !== userId) {
+    return response.status(403).json({ error: "User not authorized" });
+  }
+  // const userId = request.get('id');
   if (!userId) {
     return response.status(400).json({ error: "Missing userId" });
   }
@@ -443,6 +555,20 @@ app.delete("/buy", async (request, response) => {
 
 app.post("/cart", async (request, response) => {
   const userId = request.get('id');
+  const token = request.get('token');
+
+  if (!userId || !token) {
+    return response.status(400).json({ error: "Missing userId or token" });
+  }
+
+  const decodedToken = verifyToken(token);
+  if (!decodedToken) {
+    return response.status(401).json({ error: "Invalid or expired token" });
+  }
+  if (decodedToken.userId !== userId) {
+    return response.status(403).json({ error: "User not authorized" });
+  }
+  // const userId = request.get('id');
   if (!userId) {
     return response.status(400).json({ error: "Missing userId" });
   }
@@ -523,6 +649,20 @@ app.post("/cart", async (request, response) => {
 app.get("/deliver", async (request, response) => {
   // response.status(200).send("Delivery endpoint");
   const userId = request.get('id');
+  const token = request.get('token');
+
+  if (!userId || !token) {
+    return response.status(400).json({ error: "Missing userId or token" });
+  }
+
+  const decodedToken = verifyToken(token);
+  if (!decodedToken) {
+    return response.status(401).json({ error: "Invalid or expired token" });
+  }
+  if (decodedToken.userId !== userId) {
+    return response.status(403).json({ error: "User not authorized" });
+  }
+  // const userId = request.get('id');
   if (!userId) {
     return response.status(400).json({ error: "Missing userId" });
   }
@@ -547,6 +687,20 @@ app.get("/deliver", async (request, response) => {
 app.get("/orders", async (request, response) => {
   // response.status(200).send("Delivery endpoint");
   const userId = request.get('id');
+  const token = request.get('token');
+
+  if (!userId || !token) {
+    return response.status(400).json({ error: "Missing userId or token" });
+  }
+
+  const decodedToken = verifyToken(token);
+  if (!decodedToken) {
+    return response.status(401).json({ error: "Invalid or expired token" });
+  }
+  if (decodedToken.userId !== userId) {
+    return response.status(403).json({ error: "User not authorized" });
+  }
+  // const userId = request.get('id');
   if (!userId) {
     return response.status(400).json({ error: "Missing userId" });
   }
@@ -580,6 +734,20 @@ app.get("/orders", async (request, response) => {
 app.put("/orders", async (request, response) => {
   // response.status(200).send("Delivery endpoint");
   const userId = request.get('id');
+  // const userId = request.get('userId');
+  const token = request.get('token');
+
+  if (!userId || !token) {
+    return response.status(400).json({ error: "Missing userId or token" });
+  }
+
+  const decodedToken = verifyToken(token);
+  if (!decodedToken) {
+    return response.status(401).json({ error: "Invalid or expired token" });
+  }
+  if (decodedToken.userId !== userId) {
+    return response.status(403).json({ error: "User not authorized" });
+  }
   if (!userId) {
     return response.status(400).json({ error: "Missing userId" });
   }
@@ -624,6 +792,20 @@ app.put("/orders", async (request, response) => {
 
 app.post("/transaction", async (request, response) => {
   const userId = request.get('uid');
+  const token = request.get('token');
+
+  if (!userId || !token) {
+    return response.status(400).json({ error: "Missing userId or token" });
+  }
+
+  const decodedToken = verifyToken(token);
+  if (!decodedToken) {
+    return response.status(401).json({ error: "Invalid or expired token" });
+  }
+  if (decodedToken.userId !== userId) {
+    return response.status(403).json({ error: "User not authorized" });
+  }
+  // const userId = request.get('uid');
   if (!userId) {
     return response.status(400).json({ error: "Missing userId" });
   }
@@ -670,6 +852,19 @@ app.post("/transaction", async (request, response) => {
 
 app.get("/review",async(request, response) =>{
   const id=request.get('id');
+  const token = request.get('token');
+
+  if (!id || !token) {
+    return response.status(400).json({ error: "Missing userId or token" });
+  }
+
+  const decodedToken = verifyToken(token);
+  if (!decodedToken) {
+    return response.status(401).json({ error: "Invalid or expired token" });
+  }
+  if (decodedToken.userId !== id) {
+    return response.status(403).json({ error: "User not authorized" });
+  }
   const userId=request.get('user');
   if (!userId||!id) {
     return response.status(400).json({ error: "Missing userId" });
@@ -691,6 +886,20 @@ app.get("/review",async(request, response) =>{
 });
 
 app.post("/review",async(request,response)=>{
+  const id=request.get('userId');
+  const token = request.get('token');
+
+  if (!id || !token) {
+    return response.status(400).json({ error: "Missing userId or token" });
+  }
+
+  const decodedToken = verifyToken(token);
+  if (!decodedToken) {
+    return response.status(401).json({ error: "Invalid or expired token" });
+  }
+  if (decodedToken.userId !== id) {
+    return response.status(403).json({ error: "User not authorized" });
+  }
   const userId=request.get('user');
   if (!userId) {
     return response.status(400).json({ error: "Missing userId" });
