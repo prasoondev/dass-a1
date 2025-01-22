@@ -30,6 +30,25 @@ function Orders() {
     refresh();
   }
     , [reload]);
+    const handleChangeOTP = (transactionId) => {
+      const configuration = {
+        method: "put",
+        url: ORDERS_URL,
+        headers: {
+          'Content-Type': 'application/json',
+          'id': uid,
+          'transaction': transactionId,
+        },
+      };
+      axios(configuration)
+        .then((response) => {
+          setReload(!reload);
+        })
+        .catch((error) => {
+          console.error("Error fetching items:", error);
+        });
+        // navigate(`/orders`);      
+    };
   return (
     <div>
       <h1>Orders</h1>
@@ -53,7 +72,20 @@ function Orders() {
               <p><strong>Buyer:</strong> <span onClick={() => navigate(`/review/${item.buyerid}`)}>{item.buyername}</span></p>
               <p><strong>Status:</strong> {item.status}</p>
               {item.status == 'pending' ? (
+                <>
                 <p><strong>OTP:</strong> {item.hashedOTP}</p>
+                <button
+                style={{
+                  backgroundColor: "#007BFF",
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: "4px",
+                  padding: "8px 12px",
+                  cursor: "pointer",
+                }}
+                onClick={() => handleChangeOTP(item.transactionId)}
+                >Regenerate OTP</button>
+                </>
               ) : (
                 <p></p>
               )}

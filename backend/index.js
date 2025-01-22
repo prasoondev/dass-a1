@@ -11,16 +11,24 @@ require('dotenv').config()
 dbConnect();
 const cors = require("cors");
 const app = express();
-app.use(cors({ origin: "http://localhost:5173" }));
-app.options("*", (req, res) => {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Content-Type, Authorization, X-Requested-With"
-  );
-  res.sendStatus(200);
-});
+// app.use(cors);
+// app.use(cors({ origin: "http://localhost:5173" }));
+// app.options("*", (req, res) => {
+//   res.header("Access-Control-Allow-Origin", "*");
+//   res.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
+//   res.header(
+//     "Access-Control-Allow-Headers",
+//     "Content-Type, Authorization, X-Requested-With"
+//   );
+//   res.sendStatus(200);
+// });
+app.use(
+  cors({
+    origin: "http://localhost:5173", // Allow only the specific origin
+    methods: "GET,POST,PUT,DELETE,OPTIONS",
+    credentials: true, // Allow cookies or authentication headers
+  })
+);
 app.use(express.json());
 const PORT = 3000;
 
@@ -351,11 +359,10 @@ app.get("/cart", async (request, response) => {
       await user.save();
       const items = await Item.find({ itemId: { $in: user.items } });
       const filteredItems = items.filter(item => item.sellerid !== userId);
-      response.status(200).send(filteredItems);
-      return;
+      return response.status(200).send(filteredItems);
     }
 
-    response.status(200).send(filteredItems);
+    return response.status(200).send(filteredItems);
   } catch (err) {
     console.error(err);
     response.status(500).json({ error: "Server error" });
@@ -530,6 +537,7 @@ app.get("/orders", async (request, response) => {
     if (!user) {
       return response.status(404).json({ error: "User not found" });
     }
+    // console.log(user);
     const transactionIds = user.orderhistory.map(order => order.transactionId);
     const transactions = await Transaction.find({ transactionId: { $in: transactionIds } });
     for (const element of transactions) {
@@ -538,12 +546,57 @@ app.get("/orders", async (request, response) => {
       const buyer = await User.findOne({ userId: element.buyerid });
       element.buyername = buyer.fname + " " + buyer.lname;
       for(const package of user.orderhistory){
-        if(package.transactionId === element.transactionId){
+        if(package.transactionId == element.transactionId){
           element.hashedOTP = package.otp;
         }
       }
     }
     response.status(200).json(transactions);
+  }
+  catch (err) {
+    console.error(err);
+    response.status(500).json({ error: "Server error" });
+  }
+});
+
+app.put("/orders", async (request, response) => {
+  // response.status(200).send("Delivery endpoint");
+  const userId = request.get('id');
+  if (!userId) {
+    return response.status(400).json({ error: "Missing userId" });
+  }
+  try {
+    const user = await User.findOne({ userId: userId });
+    if (!user) {
+      return response.status(404).json({ error: "User not found" });
+    }
+    const target= request.get('transaction');
+    const transactionold = await Transaction.findOne({transactionId: target});
+    if(!transactionold){
+      return response.status(404).json({ error: "Transaction not found" });
+    }
+    console.log(transactionold);
+    const otp = Math.floor(100000 + Math.random() * 900000);
+    try{
+      const hashedOTP = await bcrypt.hash(otp.toString(), 10);
+      transactionold.hashedOTP = hashedOTP; 
+      console.log("Hashed OTP:", hashedOTP);
+      await transactionold.save();
+      for(const package of user.orderhistory){
+        if(package.transactionId==target){
+          package.otp=otp.toString();
+        }
+      }
+      user.markModified('orderhistory');
+      await user.save();
+    // console.log(user);
+      return response.status(200).json({ message: "Transaction completed successfully" });
+    }
+    catch(err){
+      console.error(err);
+      return response.status(500).json({ error: "Server error" });
+    }
+    response.status(200).json(transactionold);
   }
   catch (err) {
     console.error(err);
