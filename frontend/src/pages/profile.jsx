@@ -26,7 +26,8 @@ function Profile() {
           console.log(response.data);
         })
         .catch((error) => {
-          error = new Error();
+        alert(error.response.data.error);
+        error = new Error();
           console.log(error);
           setEditState(true);
         });
@@ -58,6 +59,7 @@ function Profile() {
         setUserDetails(response.data);
       })
       .catch((error) => {
+        alert(error.response.data.error);
         error = new Error();
         console.log(error);
       });
@@ -69,11 +71,23 @@ function Profile() {
         <>
           {checkState ? (
             <>
+            <label>
+              First name
               <input type="text" name='fname' value={userDetails.fname} onChange={handleInputChange}/>
+            </label>
+            <label>
+              Last name
               <input type="text" name='lname' value={userDetails.lname} onChange={handleInputChange}/>
+              </label>
+              <label>
+                Age
               <input type="number" name='age' value={userDetails.age} onChange={handleInputChange}/>
+              </label>
               {/* <input type="text" name='email' value={userDetails.email} onChange={handleInputChange}/> */}
+              <label>
+                Contact
               <input type="number" name='contact' value={userDetails.contact} onChange={handleInputChange}/>
+              </label>
               <button onClick={editProfile}>Save</button>
             </>
           ) : (

@@ -212,8 +212,8 @@ app.put("/profile", async (request, response) => {
     return response.status(403).json({ error: "User not authorized" });
   }
   if (!allowedDomain.test(request.body.email)) {
-    return response.status(400).send({
-      message: "Invalid email domain. Only @iiit.ac.in is allowed.",
+    return response.status(400).json({
+      error: "Invalid email domain. Only @iiit.ac.in is allowed.",
     });
   }
   try {

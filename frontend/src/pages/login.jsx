@@ -5,8 +5,8 @@ import Cookies from "universal-cookie";
 function Login() {
   const LOGIN_URL = 'http://localhost:3000/login';
   const cookies = new Cookies();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState();
+  const [password, setPassword] = useState();
   const [login, setLogin] = useState(false);
   const configuration = {
     method: "post",
@@ -37,6 +37,7 @@ function Login() {
         window.location.href = "/profile";
       })
       .catch((error) => {
+        alert(error.response.data.message);
         error = new Error();
         console.log(error);
       });

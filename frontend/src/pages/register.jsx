@@ -3,12 +3,12 @@ import axios from "axios";
 
 function Register() {
   const REGISTER_URL = 'http://localhost:3000/register';
-  const [email, setEmail] = useState("");
-  const [fname, setFname] = useState("");
-  const [lname, setLname] = useState("");
-  const [age, setAge] = useState("");
-  const [contact, setContact] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState();
+  const [fname, setFname] = useState();
+  const [lname, setLname] = useState();
+  const [age, setAge] = useState();
+  const [contact, setContact] = useState();
+  const [password, setPassword] = useState();
   const configuration = {
     method: "post",
     url: REGISTER_URL,
@@ -16,8 +16,8 @@ function Register() {
       fname,
       lname,
       email,
-      age: Number(age),
-      contact: Number(contact),
+      age: age,
+      contact: contact,
       password,
     },
   };
@@ -30,6 +30,8 @@ function Register() {
         window.location.href = "/";
       })
       .catch((error) => {
+        alert(error.response.data.message);
+
         error = new Error();
         console.log(error);
       });
