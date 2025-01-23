@@ -1,4 +1,4 @@
-import './App.css'
+// import './App.css'
 import React from 'react'
 import Cookies from "universal-cookie";
 import { Navigate } from 'react-router-dom';
@@ -18,6 +18,7 @@ import Transaction from './pages/transaction'
 import Review from './pages/review'
 import Layout from './Layout'
 import ProtectedRoute from './components/protectedroute';
+import './css/login.css';
 
 function App() {
   const cookies = new Cookies();

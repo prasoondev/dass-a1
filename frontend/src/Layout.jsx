@@ -3,7 +3,7 @@ import { Outlet } from "react-router-dom";
 
 function Layout() {
   return (
-    <>
+    <body>
         <Navbar />
         <main>
           <Outlet />
@@ -11,7 +11,7 @@ function Layout() {
         <footer>
           <p>© 2025 DASS</p>
         </footer>
-    </>
+    </body>
   );
 }
 

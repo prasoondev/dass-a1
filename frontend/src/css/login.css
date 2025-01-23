@@ -1,0 +1,151 @@
+/* Login.css */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f9;
+    margin: 0;
+    padding: 10px;
+    padding-top: 70px; /* Add padding equal to the navbar height */
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Change from center to flex-start to avoid vertical overlap */
+    min-height: 100vh;
+    color: black;
+    box-sizing: border-box; /* Include padding in height calculations */
+    overflow-y: auto; /* Enable vertical scrolling */
+}
+  h1 {
+    position: relative;
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+  }
+  
+  form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    max-width: 400px;
+    margin: auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+}
+  form input[type="submit"]:hover {
+    background-color: #0056b3;
+  }
+  form label {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Space between the checkbox and the label text */
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  
+  
+  input[type="text"], input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+    box-sizing: border-box;
+  }
+  
+  input[type="submit"], button {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    width: 100%;
+  }
+  
+  input[type="submit"]:hover, button:hover {
+    background: #0056b3;
+  }
+  
+  button {
+    margin-top: 10px;
+    text-align: center;
+  }
+  
+  button:focus, input:focus {
+    outline: none;
+    border-color: #007bff;
+  }
+  
+  button {
+    background-color: #6c757d;
+  }
+  
+  button:hover {
+    background-color: #5a6268;
+  }
+  
+  @media (max-width: 600px) {
+    form {
+        padding: 15px;
+    }
+
+    h1 {
+        font-size: 20px; /* Adjust font size for smaller screens */
+    }
+}
+  /* Navbar.css */
+  .navbar {
+    background-color: #007bff;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    padding: 10px 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    height: 60px; /* Set a fixed height */
+}
+
+  
+  .navbar-links {
+    display: flex;
+    gap: 15px; /* Add spacing between items */
+  }
+  
+  .navbar-links a {
+    text-decoration: none;
+  }
+  
+  .navbar-links button {
+    background-color: #ffffff;
+    color: #007bff;
+    border: 1px solid #007bff;
+    padding: 8px 12px;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .navbar-links button:hover {
+    background-color: #0056b3;
+    color: #ffffff;
+    border-color: #0056b3;
+  }
+  footer {
+    background-color: #007bff;
+    color: white;
+    text-align: center;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    height: 40px; /* Set a fixed height for footer */
+}

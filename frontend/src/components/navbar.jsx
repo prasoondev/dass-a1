@@ -1,37 +1,40 @@
-import {Link} from 'react-router-dom'
-import Logout from '../pages/logout'
-function Navbar(){
-    return (
-        <>
+import { Link } from 'react-router-dom';
+import Logout from '../pages/logout';
+
+function Navbar() {
+  return (
+    <nav className="navbar">
+      <div className="navbar-links">
         <Link to="/search">
-            <button>Search</button>
+          <button>Search</button>
         </Link>
         <Link to="/profile">
-            <button>Profile</button>
+          <button>Profile</button>
         </Link>
         <Link to="/support">
-            <button>Support</button>
+          <button>Support</button>
         </Link>
         <Link to="/cart">
-            <button>Cart</button>
+          <button>Cart</button>
         </Link>
         <Link to="/deliver">
-            <button>Deliver</button>
+          <button>Deliver</button>
         </Link>
         <Link to="/orders">
-            <button>Orders</button>
+          <button>Orders</button>
         </Link>
         <Link to="/sell">
-            <button>Sell</button>
+          <button>Sell</button>
         </Link>
         <Link to="/buy">
-            <button>My Items</button>
+          <button>My Items</button>
         </Link>
         <Link>
             <Logout />
         </Link>
-        </>
-    )
+      </div>
+    </nav>
+  );
 }
 
-export default Navbar
+export default Navbar;
