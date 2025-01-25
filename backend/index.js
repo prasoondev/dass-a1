@@ -7,29 +7,22 @@ const jwt = require("jsonwebtoken");
 const Item = require("./itemschema");
 const Transaction = require("./transactionschema");
 const axios = require('axios');
+const cors = require("cors");
+const Session = require("./sessionschema");
 require('dotenv').config()
 
 dbConnect();
-const cors = require("cors");
 const app = express();
-// app.use(cors);
-app.use(cors({ origin: "http://localhost:5173" }));
-app.options("*", (req, res) => {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
-  res.header(
-    "Access-Control-Allow-Headers",
-    "Content-Type, Authorization, X-Requested-With"
-  );
-  res.sendStatus(200);
-});
-// app.use(
-//   cors({
-//     origin: "http://localhost:5173", // Allow only the specific origin
-//     methods: "GET,POST,PUT,DELETE,OPTIONS",
-//     credentials: true, // Allow cookies or authentication headers
-//   })
-// );
+const corsOptions = {
+  origin: "*",  // Allow all origins
+  methods: ["GET", "POST", "PUT", "DELETE"],  // Allow all methods
+  allowedHeaders: "*",  // Allow all headers
+  credentials: false,  // Allow cookies and credentials
+  preflightContinue: false,  // Do not allow CORS preflight requests to continue
+};
+
+// Apply CORS middleware to all routes
+app.use(cors(corsOptions));
 app.use(express.json());
 const PORT = 3000;
 
@@ -941,7 +934,39 @@ app.post("/review",async(request,response)=>{
     response.status(500).json({ error: "Server error" });
   }
 });
-
+app.get("/support", async (req, res) => {
+  try {
+    const sessionId = `session_${Date.now()}`;
+    // console.log(sessionId);
+    const newSession = new Session({ sessionId, messages: [] });
+    await newSession.save();
+    res.json({ sessionId });
+  } catch (error) {
+    console.error("Error starting session:", error);
+    res.status(500).json({ error: "Failed to start session" });
+  }
+});
+app.post("/support", async (request, res) => {
+  const sessionId=request.get("sessionId");
+  const message=request.get("message");
+  if (!sessionId || !message) {
+    return res.status(400).json({ error: "Session ID and message are required" });
+  }
+  try {
+    let session = await Session.findOne({ sessionId });
+    if (!session) {
+      return res.status(404).json({ error: "Session not found" });
+    }
+    session.messages.push({ role: "user", content: message });
+    const botReply = "Hello";
+    session.messages.push({ role: "bot", content: botReply });
+    await session.save();
+    res.json({ reply: botReply });
+  } catch (error) {
+    console.error("Error handling chat message:", error);
+    res.status(500).json({ error: "Failed to process message" });
+  }
+});
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });

@@ -44,10 +44,16 @@ function Login() {
         window.location.href = "/profile";
       })
       .catch((error) => {
-        console.log('here');
-        // alert(error.response.data.message);
-        error = new Error();
-        console.log(error);
+        if (error.response) {
+          alert(error.response.data.message); // Handle server-side error
+          console.error("Server Error:", error.response);
+        } else if (error.request) {
+          alert("No response received from server. Please try again later."); // Handle no response
+          console.error("Network Error:", error.request);
+        } else {
+          alert("An unexpected error occurred.");
+          console.error("Unexpected Error:", error.message);
+        }
       });
   }
 
