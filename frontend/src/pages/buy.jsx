@@ -29,6 +29,7 @@ function Buy() {
         setItemDetails(response.data);
       })
       .catch((error) => {
+        alert(error.response.data.error);
         console.error("Error fetching items:", error);
       });
     };

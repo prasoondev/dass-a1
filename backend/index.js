@@ -6,6 +6,7 @@ const dbConnect = require("./dbconnect");
 const jwt = require("jsonwebtoken");
 const Item = require("./itemschema");
 const Transaction = require("./transactionschema");
+const axios = require('axios');
 require('dotenv').config()
 
 dbConnect();
@@ -112,10 +113,27 @@ app.post("/register", (request, response) => {
 });
 
 // login endpoint
-app.post("/login", (request, response) => {
+app.post("/login", async (request, response) => {
   // check if email exists
-  User.findOne({ email: request.body.email })
+  const captchaToken=request.body.captchaToken;
+  const captchaVerificationURL = `https://www.google.com/recaptcha/api/siteverify`;
+  const secretKey = "6LdW7sEqAAAAADtToAxbw8ZyHruj8o-kroBXRmFK";
+    const response2 = await axios.post(
+      captchaVerificationURL,
+      null,
+      {
+        params: {
+          secret: secretKey,
+          response: captchaToken,
+        },
+      }
+    );
 
+    const success  = response2.data;
+    if (!success) {
+      return response.status(400).send({ message: "CAPTCHA verification failed" });
+    }
+  User.findOne({ email: request.body.email })
     // if email exists
     .then((user) => {
       // compare the password entered and the hashed password found
