@@ -958,8 +958,38 @@ app.post("/support", async (request, res) => {
       return res.status(404).json({ error: "Session not found" });
     }
     session.messages.push({ role: "user", content: message });
-    const botReply = "Hello";
-    session.messages.push({ role: "bot", content: botReply });
+    // const botReply = "Hello";
+    const apiKey = process.env.GEMINI; // Replace with your actual API key
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+
+      const response = await axios.post(
+        apiUrl,
+        {
+          contents: [
+            {
+              parts: [{ text: message }],
+            },
+          ],
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+    
+      // Log the full response for debugging
+      console.log("API Response:", response.data);
+    
+      console.log("API Response:", JSON.stringify(response.data, null, 2));
+
+  const botReply =
+    response.data?.candidates?.[0]?.content?.parts?.[0]?.text ||
+    "Sorry, I couldn't generate a response.";
+
+  console.log("Bot Reply:", botReply);
+    
+    session.messages.push({ role: 'bot', content: botReply });
     await session.save();
     res.json({ reply: botReply });
   } catch (error) {
